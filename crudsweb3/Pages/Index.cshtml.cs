@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using crudsweb3.Models;
 using crudsweb3.data;
-
+//crear validaciones y todo lo demas :)
 namespace crudsweb3.Pages
 {
     public class IndexModel : PageModel

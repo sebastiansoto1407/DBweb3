@@ -87,5 +87,4 @@ wwwroot/lib/
 *.tmp
 *.bak
 *.backup
-!/Backup/TareaDB.bak
 

@@ -2,53 +2,99 @@
 @model crudsweb3.Pages.IndexModel
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Tareas";
 }
 
-<h1>Index tareas</h1>
+<div class="container py-4">
+    <div class="d-flex align-items-center justify-content-between mb-3">
+        <h1 class="h3 m-0">Tareas</h1>
+        <a asp-page="Create" class="btn btn-primary">+ Crear nueva</a>
+    </div>
 
-<p>
-    <a asp-page="Create">Crear nueva tarea</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Tarea[0].nombreTarea)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Tarea[0].fechaVencimiento)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Tarea[0].estado)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Tarea[0].IdUsuario)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model.Tarea) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.nombreTarea)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.fechaVencimiento)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.estado)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IdUsuario)
-            </td>
-            <td>
-                <a asp-page="./Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-page="./Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-page="./Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+    <div class="card shadow-sm">
+        <div class="card-body p-0">
+            @if (Model.Tarea == null || !Model.Tarea.Any())
+            {
+                <div class="p-4 text-center text-muted">
+                    <div class="fs-5">No hay tareas registradas.</div>
+                    <div class="mt-2">
+                        <a asp-page="Create" class="btn btn-outline-primary btn-sm">Crear la primera tarea</a>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>@Html.DisplayNameFor(m => m.Header.nombreTarea)</th>
+                                <th>@Html.DisplayNameFor(m => m.Header.fechaVencimiento)</th>
+                                <th>@Html.DisplayNameFor(m => m.Header.estado)</th>
+                                <th>@Html.DisplayNameFor(m => m.Header.IdUsuario)</th>
+                                <th class="text-end" style="width: 200px;">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.Tarea)
+                            {
+                                <tr>
+                                    <td class="fw-medium">
+                                        @Html.DisplayFor(_ => item.nombreTarea)
+                                    </td>
+                                    <td>
+                                        @{
+                                            string mostrado;
+                                            if (item.fechaVencimiento == null)
+                                            {
+                                                mostrado = "-";
+                                            }
+                                            else
+                                            {
+                                                mostrado = string.Format("{0:dd/MM/yyyy}", item.fechaVencimiento);
+                                            }
+                                        }
+                                        @mostrado
+                                    </td>
+                                    <td>
+                                        @{
+                                            var est = (item.estado ?? string.Empty).ToString();
+                                            var e = est.Trim().ToLowerInvariant();
+                                            var badge = "bg-secondary";
+                                            if (bool.TryParse(e, out var bBool))
+                                            {
+                                                badge = bBool ? "bg-success" : "bg-danger";
+                                                est = bBool ? "Activo" : "Inactivo";
+                                            }
+                                            else if (e == "activo" || e == "activa" || e == "completado" || e == "completada")
+                                            {
+                                                badge = "bg-success";
+                                            }
+                                            else if (e == "pendiente")
+                                            {
+                                                badge = "bg-warning";
+                                            }
+                                            else if (e == "inactivo" || e == "cancelado" || e == "vencido")
+                                            {
+                                                badge = "bg-danger";
+                                            }
+                                        }
+                                        <span class="badge @badge">@est</span>
+                                    </td>
+                                    <td>@Html.DisplayFor(_ => item.IdUsuario)</td>
+                                    <td class="text-end">
+                                        <div class="btn-group btn-group-sm" role="group">
+                                            <a asp-page="./Details" asp-route-id="@item.Id" class="btn btn-outline-secondary">Detalles</a>
+                                            <a asp-page="./Edit" asp-route-id="@item.Id" class="btn btn-outline-primary">Editar</a>
+                                            <a asp-page="./Delete" asp-route-id="@item.Id" class="btn btn-outline-danger">Eliminar</a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+    </div>
+</div>

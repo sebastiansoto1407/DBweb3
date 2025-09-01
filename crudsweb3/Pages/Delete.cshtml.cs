@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
@@ -12,9 +9,9 @@ namespace crudsweb3.Pages
 {
     public class DeleteModel : PageModel
     {
-        private readonly crudsweb3.data.TareaDbContext _context;
+        private readonly TareaDbContext _context;
 
-        public DeleteModel(crudsweb3.data.TareaDbContext context)
+        public DeleteModel(TareaDbContext context)
         {
             _context = context;
         }
@@ -24,38 +21,30 @@ namespace crudsweb3.Pages
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
-            var tarea = await _context.Tareas.FirstOrDefaultAsync(m => m.Id == id);
+            var tarea = await _context.Tareas
+                .AsNoTracking()
+                .FirstOrDefaultAsync(m => m.Id == id);
 
-            if (tarea == null)
-            {
-                return NotFound();
-            }
-            else
-            {
-                Tarea = tarea;
-            }
+            if (tarea == null) return NotFound();
+
+            Tarea = tarea;
             return Page();
         }
 
         public async Task<IActionResult> OnPostAsync(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
             var tarea = await _context.Tareas.FindAsync(id);
-            if (tarea != null)
+            if (tarea == null)
             {
-                Tarea = tarea;
-                _context.Tareas.Remove(Tarea);
-                await _context.SaveChangesAsync();
+                return RedirectToPage("./Index");
             }
+
+            _context.Tareas.Remove(tarea);
+            await _context.SaveChangesAsync();
 
             return RedirectToPage("./Index");
         }

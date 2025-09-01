@@ -1,43 +1,44 @@
 ﻿@page
 @model crudsweb3.Pages.DetailsModel
-
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Detalles de la tarea";
 }
 
-<h1>Details</h1>
+<div class="container py-4">
+    <h1 class="h3 mb-3">Detalles de la tarea</h1>
 
-<div>
-    <h4>Tarea</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Tarea.nombreTarea)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Tarea.nombreTarea)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Tarea.fechaVencimiento)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Tarea.fechaVencimiento)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Tarea.estado)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Tarea.estado)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Tarea.IdUsuario)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Tarea.IdUsuario)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-page="./Edit" asp-route-id="@Model.Tarea.Id">Edit</a> |
-    <a asp-page="./Index">Back to List</a>
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <dl class="row mb-0">
+                <dt class="col-sm-3">@Html.DisplayNameFor(m => m.Tarea.nombreTarea)</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(m => m.Tarea.nombreTarea)</dd>
+
+                <dt class="col-sm-3">@Html.DisplayNameFor(m => m.Tarea.fechaVencimiento)</dt>
+                <dd class="col-sm-9">
+                    @string.Format("{0:dd/MM/yyyy HH:mm}", Model.Tarea.fechaVencimiento)
+                </dd>
+
+                <dt class="col-sm-3">@Html.DisplayNameFor(m => m.Tarea.estado)</dt>
+                <dd class="col-sm-9">
+                    @{
+                        var est = (Model.Tarea.estado ?? string.Empty).Trim();
+                        var e = est.ToUpperInvariant();
+                        var badge = "bg-secondary";
+                        if (e == "PENDIENTE") badge = "bg-warning";
+                        else if (e == "COMPLETO" || e == "COMPLETA" || e == "ACTIVO" || e == "ACTIVA") badge = "bg-success";
+                        else if (e == "INACTIVO" || e == "CANCELADO" || e == "VENCIDO") badge = "bg-danger";
+                    }
+                    <span class="badge @badge">@est</span>
+                </dd>
+
+                <dt class="col-sm-3">@Html.DisplayNameFor(m => m.Tarea.IdUsuario)</dt>
+                <dd class="col-sm-9">@Html.DisplayFor(m => m.Tarea.IdUsuario)</dd>
+            </dl>
+        </div>
+    </div>
+
+    <div class="d-flex gap-2">
+        <a asp-page="./Edit" asp-route-id="@Model.Tarea.Id" class="btn btn-primary">Editar</a>
+        <a asp-page="./Index" class="btn btn-outline-secondary">Volver a la lista</a>
+    </div>
 </div>
